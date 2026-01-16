@@ -1,0 +1,29 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "Gemini Ultimate Core",
+        "description": "Premium Script Engine for 1.20.80",
+        "uuid": "7f3e8b1a-2c4d-4f9a-8e5b-3d2c1b0a9f8e",
+        "version": [1, 0, 0],
+        "min_engine_version": [1, 20, 80]
+    },
+    "modules": [
+        {
+            "description": "Scripting Module",
+            "type": "javascript",
+            "uuid": "2a4e6b8c-1d3f-5g7h-9i0j-k1l2m3n4o5p6",
+            "version": [1, 0, 0],
+            "entry": "scripts/main.js"
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.10.0"
+        },
+        {
+            "module_name": "@minecraft/server-ui",
+            "version": "1.2.0"
+        }
+    ]
+}
