@@ -1,54 +1,31 @@
-import { world, system } from "@minecraft/server";
+import { world, system, BlockLocation } from "@minecraft/server";
 
-export const Fly = {
-    onTick(player, settings) {
-        if (!settings.active) return;
-        if (settings.mode === "Bypass" && system.currentTick % 10 === 0) {
-            player.applyKnockback(0, 0, 0, settings.speed); // Мелкий импульс для обхода
+export function run(player, tags) {
+    const vel = player.getVelocity();
+
+    // 1. FLY BYPASS (Anti-Kick)
+    if (tags.includes("gm_fly")) {
+        player.setVelocity({ x: vel.x, y: 0.02, z: vel.z });
+        if (system.currentTick % 20 === 0) player.applyKnockback(0, 0, 0, 0.05);
+    }
+
+    // 2. SPEED (Bypass)
+    if (tags.includes("gm_speed")) {
+        const dir = player.getViewDirection();
+        player.setVelocity({ x: dir.x * 0.5, y: vel.y, z: dir.z * 0.5 });
+    }
+
+    // 3. SCAFFOLD (Авто-бриджинг)
+    if (tags.includes("gm_scaffold")) {
+        const blockBelow = player.dimension.getBlock({ x: player.location.x, y: player.location.y - 1, z: player.location.z });
+        if (blockBelow?.isValid() && blockBelow.isAir) {
+            blockBelow.setType("minecraft:wool"); // Или любой блок из инвентаря
         }
     }
-};
 
-export const Speed = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Step = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Spider = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const NoSlow = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Scaffold = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const WaterWalk = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Jetpack = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Glide = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Blink = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Phase = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Teleport = {
-    onTick(player, settings) { /* ... */ }
-};
+    // 4. WATER WALK (Jesus)
+    if (tags.includes("gm_jesus")) {
+        const block = player.dimension.getBlock(player.location);
+        if (block?.typeId === "minecraft:water") player.setVelocity({ x: vel.x, y: 0.1, z: vel.z });
+    }
+}
