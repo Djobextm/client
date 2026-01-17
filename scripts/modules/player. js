@@ -1,54 +1,17 @@
-import { world } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui"; // Для NBT Editor UI
+export function run(player, tags) {
+    // 1. NO FALL
+    if (tags.includes("gm_nofall") && player.getVelocity().y < -0.5) {
+        player.applyKnockback(0, 0, 0, 0.01);
+    }
 
-export const NBTEditor = {
-    onUse(player, item) {
-        if (!item) return;
-        const form = new ActionFormData()
-            .title("§uNBT Editor")
-            .body("§7Редактируйте NBT предмета")
-            .button("§aУрон: 32767")
-            .button("§cУбрать NBT");
-        
-        form.show(player).then(response => {
-            if (response.selection === 0) {
-                // Добавление NBT-тега
-                item.setLore(["§uNBT Power!"]);
-                // world.sendMessage("Item NBT set to max damage.");
-            }
-        });
-    },
-    onTick(player, settings) { /* ... */ }
-};
+    // 2. AUTO ARMOR
+    if (tags.includes("gm_autoarmor")) {
+        const equippable = player.getComponent("equippable");
+        // Логика автоматического поиска и надевания брони
+    }
 
-export const AutoArmor = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const AutoEat = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const FastPlace = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const NoFall = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const InventoryWalk = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const AutoMine = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const AutoTool = {
-    onTick(player, settings) { /* ... */ }
-};
-
-export const Crasher = {
-    onTick(player, settings) { /* ... */ } // Логика крашера (пакет-спам)
-};
+    // 3. FAST EAT
+    if (tags.includes("gm_fasteat") && player.isUsingItem) {
+        system.runTimeout(() => { /* Завершение использования за 1 тик */ }, 1);
+    }
+}
