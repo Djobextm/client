@@ -1,31 +1,37 @@
 import { world, system } from "@minecraft/server";
+import * as combat from "./modules/combat.js";
+import * as worldMod from "./modules/world.js";
+import * as playerMod from "./modules/player.js";
+import * as misc from "./modules/misc.js";
 
+// Глобальное хранилище состояний (управляется через твою ClickGUI)
 const Gemini = {
     modules: {
-        aura: true, reach: 7.5, hitbox: 1.5,
-        fly: "Bypass", speed: 1.5, esp: true,
-        nbt_stick: true, nofall: true, phase: true
+        killaura: false, reach: 7, fly: false, 
+        esp: false, hitbox: 1, speed: 1
     }
 };
 
+// Основной поток (Tick Loop)
 system.runInterval(() => {
-    for (const player of world.getAllPlayers()) {
-        // ESP (Visuals)
-        if (Gemini.modules.esp) {
-            world.getAllPlayers().forEach(other => {
-                if (other.id !== player.id) player.dimension.spawnParticle("minecraft:blue_flame_particle", other.location);
-            });
-        }
-        // NBT Editor (Exploits) - Активация палкой из манифеста
-        const inv = player.getComponent("inventory").container;
-        const item = inv.getItem(player.selectedSlot);
-        if (Gemini.modules.nbt_stick && item?.typeId === "minecraft:stick") {
-            item.setLore(["§uGemini Editor", "§bGitHub Sync: OK", "§7Damage: 32767"]);
-            inv.setItem(player.selectedSlot, item);
-        }
-        // Fly Bypass (Movement)
-        if (Gemini.modules.fly === "Bypass" && system.currentTick % 10 === 0) {
-            player.applyKnockback(0, 0, 0, 0.02);
-        }
-    }
+    const players = world.getAllPlayers();
+    if (players.length === 0) return;
+
+    const local = players[0];
+
+    // Вызов обработчиков из модулей
+    if (Gemini.modules.killaura) combat.runAura(local, Gemini.modules.reach);
+    if (Gemini.modules.fly) worldMod.runFly(local);
+    if (Gemini.modules.esp) misc.runESP(local);
+    
+    // Синхронизация с ClickGUI (через динамические свойства или теги)
+    syncWithGUI(local);
 }, 1);
+
+function syncWithGUI(player) {
+    // Читаем теги, которые вешает твоя ClickGUI (Kotlin) на игрока
+    const tags = player.getTags();
+    Gemini.modules.killaura = tags.includes("gm_aura_on");
+    Gemini.modules.fly = tags.includes("gm_fly_on");
+    Gemini.modules.esp = tags.includes("gm_esp_on");
+}
