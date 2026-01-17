@@ -1,0 +1,54 @@
+import { world } from "@minecraft/server";
+import { ActionFormData } from "@minecraft/server-ui"; // Для NBT Editor UI
+
+export const NBTEditor = {
+    onUse(player, item) {
+        if (!item) return;
+        const form = new ActionFormData()
+            .title("§uNBT Editor")
+            .body("§7Редактируйте NBT предмета")
+            .button("§aУрон: 32767")
+            .button("§cУбрать NBT");
+        
+        form.show(player).then(response => {
+            if (response.selection === 0) {
+                // Добавление NBT-тега
+                item.setLore(["§uNBT Power!"]);
+                // world.sendMessage("Item NBT set to max damage.");
+            }
+        });
+    },
+    onTick(player, settings) { /* ... */ }
+};
+
+export const AutoArmor = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const AutoEat = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const FastPlace = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const NoFall = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const InventoryWalk = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const AutoMine = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const AutoTool = {
+    onTick(player, settings) { /* ... */ }
+};
+
+export const Crasher = {
+    onTick(player, settings) { /* ... */ } // Логика крашера (пакет-спам)
+};
